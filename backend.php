@@ -92,6 +92,12 @@ if (isset($_POST['formsubmitted']))
       
     } 
 
+
+$return_type='int';
+$variable_type='int'; 
+
+create_string($funcname,$classname,$noofargs,$arguments,$return_type,$variable_type);
+
  
 }
 
@@ -119,8 +125,35 @@ function conv_check($name , $opt)
  				 echo "Wrong Input";
              return FALSE;
 			}
-}    
+} 
+
+function create_string($funcname,$classname,$noofargs,$arguments,$return_type,$variable_type) 
+{
+public class Sort{
+  public int sort(ArrayList arr){
+     // write your code here
+  }
+}
+//for C language
+$argumentlist = '';
+for($x=noofagrs;$x>=1;$x--)
+$argumentlist = $arguments[$x].$argumentlist;
+
+
+$CCode = $return_type.' '.$funcname.'('.$argumentlist.')'."{\n".'//write your code here'."\n \n".'}'; 
+
+
+$JavaCode = 'public class '.$classname.'{'."\n"."\t".'public '.$return_type.' '.$funcname.'('.$argumentlist.')'."{\n".'//write your code here'."\n \n"."\t".'}'."\n".'}'; 
+
+
+
+
+
+}   
 	
+
+
+
 
 
            
