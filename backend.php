@@ -1,11 +1,11 @@
 <?php
 
-
-
-
-if (isset($_POST['formsubmitted'])) 
+$return_type='int';
+$variable_type='int'; 
+//echo $_POST['noofargs'];
+if (1) 
 {
-    $error = array();//Declare An Array to store any error message  
+	 $error = array();//Declare An Array to store any error message  
     if (empty($_POST['funcname'])) 
 	   {  //if no name has been supplied 
         	$error[] = 'Please enter a function name! ';//add to array "error"
@@ -15,8 +15,7 @@ if (isset($_POST['formsubmitted']))
           if(conv_check($_POST['funcname'],1) && conv_check($_POST['funcname'],2) ) //conv_check (string , 1 ) will check for naming convention of Function name
 				{
 				 $funcname = $_POST['funcname'];	 	      //else assign it a variable     
-            }	
-          //  
+            }	  
           else 
              {       	  
               $error[] = 'The function name you entered doesn\'t follow the C or Java Function Naming Convention '; 
@@ -32,7 +31,7 @@ if (isset($_POST['formsubmitted']))
 	 	{ 
           if(conv_check($_POST['classname'],2)) //conv_check (string , 1 ) will check for naming convention of class name for java
 				{
-				 $funcname = $_POST['classname'];	 	      //else assign it a variable     
+				 $classname = $_POST['classname'];	 	      //else assign it a variable     
             }	
           //  
           else 
@@ -49,28 +48,35 @@ if (isset($_POST['formsubmitted']))
     else 
 	 	{ 
          $noofargs = $_POST['noofargs'];	 	      //else assign it a variable     
+         //echo $noofargs;
       }	
    
-   
+     
     
 
 
-  $arguments = array(); // array to hold arguments 
+  $varnames = array(); // array to hold arguments 
   $dimensions = array(); // array to hold dimensions
-
-  for($x=0; $x<=$noofargs; $x++)
+  $arglistC=array();      //array to hold arg list elemnts
+  $arglistJ=array();     //array to hold list of Java
+   
+   
+   
+  for($x=1; $x<=$noofargs; $x++)
     {
+    	 
+    	 
       $varname = 'var'.$x;
       $dim = 'dim'.$x;
-     if (empty($_POST[$varname])) 
+      if (empty($_POST[$varname])) 
 	   {//if no name has been supplied 
-          	$error[] = 'Please enter a variable name for variable ! '.$x+1. ' ' ;//add to array "error"
+          	$error[] = 'Please enter a variable name for variable !';//add to array "error"
       } 
-    else 
+      else 
 	 	{ 
           if(conv_check($_POST[$varname],1) && conv_check($_POST[$varname],2) ) //conv_check (string , 1/2 ) will check for naming convention of name for C and Java
-				 {
-				 $arguments[$x] = $_POST[$varname];	 	      //else assign it a variable     
+  				 {
+				 $varnames[$x] = $_POST[$varname];	 	      //else assign it a variable     
              }	
           //  
           else 
@@ -80,26 +86,107 @@ if (isset($_POST['formsubmitted']))
       }
 
      
-    $dim = 'dim'.$x;
+    
     if (empty($_POST[$dim])) 
 	   {//if no name has been supplied 
-          	$error[] = 'Please enter a dimension for the variable '.$x+1;//add to array "error"
+          	$error[] = 'Please enter a dimension for the variable '.$x;//add to array "error"
       } 
     else 
 	 	{ 
-           $dimensions[$x] = $_POST[$dim];	 	      //else assign it a variable     
+	 	     $indexof_= strpos($_POST[$dim],'_'); //extracting dimension which is in the form f i_1 , where 1 is the dimension.
+	 	     $indexof_ = $indexof_ + 1;
+	 	     $extdim =substr($_POST[$dim],$indexof_, $length = 1);
+           $dimensions[$x] = $extdim;	 	      //else assign it a variable     
       }	
       
-    } 
+    //echo $x;  
+    
+   
+    $synC='syntaxC'.$x;
+    $syntaxC=$_POST[$synC];   
+    
+    $synJ='syntaxJ'.$x;
+    $syntaxJ=$_POST[$synJ];   
+   
+   if($dimensions[$x]== "0")
+      {
+      
+      $arglistC[$x] = $variable_type.' '.$varnames[$x];          
+      $arglistJ[$x] = $variable_type.' '.$varnames[$x];   
+         
+      }     
+   
+     
+   else if($dimensions[$x] == "1")   
+      {
+      	switch ($syntaxC) 
+      	   {
+        				case "arr1":
+        					$arglistC[$x]=$variable_type.' '.$varnames[$x].'[]';
+        					break;
+    					case "ptr1":
+        					$arglistC[$x]=$variable_type.' *'.$varnames[$x];
+        					break;
+            }
+        
+        switch ($syntaxJ) 
+      	   {
+        				case "jarr1":
+        					$arglistJ[$x]=$variable_type.'[] '.$varnames[$x];
+        					break;
+    					case "jlist1":
+        					$arglistJ[$x]='ArrayList '.$varnames[$x].'&lt;'.$variable_type.'&gt;';
+        					break;
+        				case "jset1":
+        					$arglistJ[$x]='Set '.$varnames[$x].'&lt;'.$variable_type.'&lt;';
+        					break;	
+            }        
+        
+      }
+  
+  else if($dimensions[$x] == "2")
+     {
+        switch ($syntaxC) 
+      	   {
+        				case "arr2":
+        					$arglistC[$x]=$variable_type.' '.$varnames[$x].'[][]';
+        					break;
+    					case "ptr2":
+        					$arglistC[$x]=$variable_type.' **'.$varnames[$x];
+        					break;
+                  case "ptr12":
+        					$arglistC[$x]=$variable_type.' *'.$varnames[$x].'[]';
+        					break;            
+            }
+        
+        switch ($syntaxJ) 
+      	   {
+        				case "jarr2":
+        					$arglistJ[$x]=$variable_type.'[][] '.$varnames[$x];
+        					break;
+    					case "jlist2":
+        					$arglistJ[$x]='ArrayList '.$varnames[$x].'&lt;'.$variable_type.'&gt;';
+        					break;
+        				case "jset2":
+        					$arglistJ[$x]='Set '.$varnames[$x].'&lt;'.$variable_type.'&gt;'; // various forms can be updated here
+        					break;	
+            }  
+     }					
+  }  
+//echo $arglistC[1];
 
+create_string($funcname,$classname,$noofargs,$arglistC,$arglistJ,$return_type);
 
-$return_type='int';
-$variable_type='int'; 
-
-create_string($funcname,$classname,$noofargs,$arguments,$return_type,$variable_type);
-
+echo '<div class="errormsgbox"> <ol>';
+foreach ($error as $key => $values)
+	{
+    echo '	<li>'.$values.'</li>';
+   }
+echo '</ol></div>';
+} 
  
-}
+
+
 
 
 
@@ -121,33 +208,34 @@ function conv_check($name , $opt)
              else 
              return FALSE;
   				 break;
-			default:
+     			default:
  				 echo "Wrong Input";
              return FALSE;
 			}
 } 
 
-function create_string($funcname,$classname,$noofargs,$arguments,$return_type,$variable_type) 
+function create_string($funcname,$classname,$noofargs,$arglistC,$arglistJ,$return_type) 
 {
-public class Sort{
-  public int sort(ArrayList arr){
-     // write your code here
-  }
-}
+
 //for C language
-$argumentlist = '';
-for($x=noofagrs;$x>=1;$x--)
-$argumentlist = $arguments[$x].$argumentlist;
+$argumentlistC = '';
+for($x = $noofargs; $x>=2 ; $x--)
+$argumentlistC = ' ,'.$arglistC[$x].$argumentlistC;
+$argumentlistC = $arglistC[1].$argumentlistC;
+
+$argumentlistJ = '';
+for($x = $noofargs ; $x>=2 ; $x--)
+$argumentlistJ = ' ,'.$arglistJ[$x].$argumentlistJ;
+$argumentlistJ = $arglistJ[1].$argumentlistJ;
+$CCode = $return_type.' '.$funcname.'('.$argumentlistC.')'."{<br>".'//write your code here'."<br><br>".'}'; 
 
 
-$CCode = $return_type.' '.$funcname.'('.$argumentlist.')'."{\n".'//write your code here'."\n \n".'}'; 
+$JavaCode = 'public class '.$classname.'{'."<br>"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".'public '.$return_type.' '.$funcname.'('.$argumentlistJ.')'."{<br>".'//write your code here'."<br><br>"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".'}'."<br>".'}'; 
 
 
-$JavaCode = 'public class '.$classname.'{'."\n"."\t".'public '.$return_type.' '.$funcname.'('.$argumentlist.')'."{\n".'//write your code here'."\n \n"."\t".'}'."\n".'}'; 
-
-
-
-
+echo $CCode;
+echo "<br>";
+echo $JavaCode;
 
 }   
 	
@@ -157,12 +245,7 @@ $JavaCode = 'public class '.$classname.'{'."\n"."\t".'public '.$return_type.' '.
 
 
            
-echo '<div class="errormsgbox"> <ol>';
-foreach ($error as $key => $values)
-	{
-     echo '	<li>'.$values.'</li>';
-   }
-echo '</ol></div>';
+
 
 
 
