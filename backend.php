@@ -2,8 +2,8 @@
 
 $return_type='int';
 $variable_type='int'; 
-//echo $_POST['noofargs'];
-if (1) 
+
+if (isset($_POST['submit']))
 {
 	 $error = array();//Declare An Array to store any error message  
     if (empty($_POST['funcname'])) 
@@ -63,9 +63,7 @@ if (1)
    
    
   for($x=1; $x<=$noofargs; $x++)
-    {
-    	 
-    	 
+    { 
       $varname = 'var'.$x;
       $dim = 'dim'.$x;
       if (empty($_POST[$varname])) 
@@ -103,14 +101,14 @@ if (1)
     
    
     $synC='syntaxC'.$x;
-    $syntaxC=$_POST[$synC];   
+     
     
     $synJ='syntaxJ'.$x;
-    $syntaxJ=$_POST[$synJ];   
+    
    
    if($dimensions[$x]== "0")
       {
-      
+     
       $arglistC[$x] = $variable_type.' '.$varnames[$x];          
       $arglistJ[$x] = $variable_type.' '.$varnames[$x];   
          
@@ -119,6 +117,8 @@ if (1)
      
    else if($dimensions[$x] == "1")   
       {
+         $syntaxC=$_POST[$synC];  
+         $syntaxJ=$_POST[$synJ]; 
       	switch ($syntaxC) 
       	   {
         				case "arr1":
@@ -145,7 +145,9 @@ if (1)
       }
   
   else if($dimensions[$x] == "2")
-     {
+     { 
+        $syntaxC=$_POST[$synC];  
+        $syntaxJ=$_POST[$synJ]; 
         switch ($syntaxC) 
       	   {
         				case "arr2":
@@ -175,8 +177,8 @@ if (1)
   }  
 //echo $arglistC[1];
 
-create_string($funcname,$classname,$noofargs,$arglistC,$arglistJ,$return_type);
-
+create_stringC($funcname,$classname,$noofargs,$arglistC,$return_type);
+create_stringJava($funcname,$classname,$noofargs,$arglistJ,$return_type);
 echo '<div class="errormsgbox"> <ol>';
 foreach ($error as $key => $values)
 	{
@@ -214,7 +216,7 @@ function conv_check($name , $opt)
 			}
 } 
 
-function create_string($funcname,$classname,$noofargs,$arglistC,$arglistJ,$return_type) 
+function create_stringC($funcname,$classname,$noofargs,$arglistC,$return_type) 
 {
 
 //for C language
@@ -223,40 +225,40 @@ for($x = $noofargs; $x>=2 ; $x--)
 $argumentlistC = ' ,'.$arglistC[$x].$argumentlistC;
 $argumentlistC = $arglistC[1].$argumentlistC;
 
+
+$CCode = $return_type.' '.$funcname.'('.$argumentlistC.')'."{<br>".'//write your code here'."<br><br>".'}'; 
+
+
+echo $CCode;
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+
+}   
+
+function create_stringJava($funcname,$classname,$noofargs,$arglistJ,$return_type) 
+{
+
+//for C language
+
 $argumentlistJ = '';
 for($x = $noofargs ; $x>=2 ; $x--)
 $argumentlistJ = ' ,'.$arglistJ[$x].$argumentlistJ;
 $argumentlistJ = $arglistJ[1].$argumentlistJ;
-$CCode = $return_type.' '.$funcname.'('.$argumentlistC.')'."{<br>".'//write your code here'."<br><br>".'}'; 
+ 
 
 
 $JavaCode = 'public class '.$classname.'{'."<br>"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".'public '.$return_type.' '.$funcname.'('.$argumentlistJ.')'."{<br>".'//write your code here'."<br><br>"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".'}'."<br>".'}'; 
 
 
-echo $CCode;
-echo "<br>";
+
 echo $JavaCode;
 
 }   
 	
-
-
-
-
-
-           
-
-
-
-
-   
-	  
-	  
-	  
-	   
-	  
-	       
-
+ 
 
 
 
