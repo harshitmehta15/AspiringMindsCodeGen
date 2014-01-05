@@ -50,10 +50,10 @@ function getArg(cat)
 		req.send(null);
 	}
 }
-function getDim(arg) 
+function getDim(arg,vname) 
 {
 	
-  // alert('khan');	
+  	
 	var req=getXMLHTTP();
 	if(req==null)
 	{
@@ -61,11 +61,12 @@ function getDim(arg)
 	}
 	if(req)
 	{
-		
+		alert(vname);
 		var index = arg.indexOf("_");
 		var ret = arg.substr(0,index);
 		var cat = arg.substr(index+1,arg.length);
-		var strurl="dynamic-form.php?dim_value="+cat+"&varnum="+ret;
+		
+		var strurl="dynamic-form.php?dim_value="+cat+"&varnum="+ret+"&varname="+vname;
       //alert(strurl);    
       req.onreadystatechange=function()
 		{

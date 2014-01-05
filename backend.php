@@ -114,8 +114,17 @@ if (isset($_POST['submit']))
          
       }     
    
+   
+    else 
+    {
      
-   else if($dimensions[$x] == "1")   
+     $arglistC[$x] = $_POST[$synC];    
+     $arglistJ[$x]=$_POST[$synJ];
+    
+    
+    }
+     
+  /* else if($dimensions[$x] == "1")   
       {
          $syntaxC=$_POST[$synC];  
          $syntaxJ=$_POST[$synJ]; 
@@ -173,7 +182,7 @@ if (isset($_POST['submit']))
         					$arglistJ[$x]='Set '.$varnames[$x].'&lt;'.$variable_type.'&gt;'; // various forms can be updated here
         					break;	
             }  
-     }					
+     }*/					
   }  
 //echo $arglistC[1];
 
